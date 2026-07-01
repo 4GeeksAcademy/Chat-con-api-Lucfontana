@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Groq AI Chat - Premium Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#552100",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-surface": "#e5e2e1",
+                        "on-primary-fixed": "#341100",
+                        "tertiary-container": "#00b251",
+                        "primary": "#ffb690",
+                        "surface-container-highest": "#353535",
+                        "background": "#131313",
+                        "primary-fixed": "#ffdbca",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#783200",
+                        "tertiary-fixed-dim": "#4ae176",
+                        "surface-dim": "#131313",
+                        "outline-variant": "#584237",
+                        "on-tertiary-fixed": "#002109",
+                        "on-secondary-fixed": "#001f26",
+                        "secondary-fixed": "#acedff",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb690",
+                        "on-background": "#e5e2e1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "surface-bright": "#393939",
+                        "on-secondary-container": "#00424e",
+                        "secondary-container": "#03b5d3",
+                        "surface-container": "#20201f",
+                        "on-secondary": "#003640",
+                        "primary-container": "#f97316",
+                        "surface-variant": "#353535",
+                        "inverse-primary": "#9d4300",
+                        "on-tertiary-container": "#003b16",
+                        "tertiary-fixed": "#6bff8f",
+                        "on-surface-variant": "#e0c0b1",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-tertiary-fixed-variant": "#005321",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary": "#003915",
+                        "on-error": "#690005",
+                        "on-primary-container": "#582200",
+                        "surface-tint": "#ffb690",
+                        "surface": "#131313",
+                        "surface-container-low": "#1c1b1b",
+                        "secondary": "#4cd7f6",
+                        "tertiary": "#4ae176",
+                        "on-surface": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "outline": "#a78b7d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "0.5rem",
+                        "stack-lg": "2rem",
+                        "container-max": "1200px",
+                        "gutter": "1.5rem",
+                        "stack-md": "1rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "code-sm": ["Geist"],
+                        "label-md": ["Geist"],
+                        "headline-xl": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Geist"]
+                    },
+                    "fontSize": {
+                        "code-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0a0a;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 10px;
+        }
+        .ai-glow {
+            border-top: 2px solid #4cd7f6;
+            box-shadow: 0 -4px 20px -10px rgba(76, 215, 246, 0.3);
+        }
+        .user-glow {
+            border-right: 2px solid #f97316;
+        }
+        @keyframes pulse-cyan {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .animate-pulse-cyan {
+            animation: pulse-cyan 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-background overflow-hidden h-screen flex flex-col">
+<!-- TopAppBar - Fixed Strategy -->
+<header class="flex justify-between items-center px-gutter py-stack-sm w-full sticky top-0 z-50 bg-background border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary font-headline-lg text-headline-lg" data-icon="bolt">bolt</span>
+<div class="flex flex-col">
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary font-bold tracking-tight">Groq AI Chat</h1>
+<p class="font-label-md text-label-md text-on-surface-variant leading-none">Instant Intelligence Engine</p>
+</div>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="hidden md:flex items-center gap-6">
+<nav class="flex gap-4">
+<span class="text-primary font-bold font-label-md text-label-md cursor-pointer hover:text-primary transition-colors">Chat</span>
+<span class="text-on-surface-variant font-label-md text-label-md cursor-pointer hover:text-primary transition-colors">History</span>
+<span class="text-on-surface-variant font-label-md text-label-md cursor-pointer hover:text-primary transition-colors">Settings</span>
+</nav>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="search">search</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- SideNavBar / History Sidebar -->
+<aside class="hidden lg:flex flex-col w-64 h-full sticky top-0 bg-surface-container-low border-r border-outline-variant">
+<div class="p-gutter flex flex-col gap-6">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-secondary-container/10 border border-secondary/20">
+<span class="material-symbols-outlined text-secondary" data-icon="monitoring">monitoring</span>
+<div>
+<p class="font-label-md text-label-md text-secondary font-bold">Session Active</p>
+<p class="text-[10px] uppercase tracking-widest text-on-surface-variant">llama3-8b-8192</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<p class="px-2 font-label-md text-label-md text-on-surface-variant opacity-60 uppercase tracking-widest">Recent Chats</p>
+<nav class="flex flex-col gap-1">
+<div class="flex items-center gap-3 p-3 rounded-xl text-secondary font-bold bg-secondary-container/10 hover:bg-surface-container-high transition-all cursor-pointer group">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="truncate font-label-md">Optimización Llama 3</span>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="truncate font-label-md">Data Analysis Alpha</span>
+</div>
+<div class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="truncate font-label-md">API Integration Guide</span>
+</div>
+</nav>
+</div>
+<button class="mt-4 w-full py-2 px-4 rounded-xl border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete_sweep">delete_sweep</span>
+                    Clear History
+                </button>
+</div>
+<div class="mt-auto p-gutter border-t border-outline-variant">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span class="font-label-md">Help Center</span>
+</div>
+<div class="flex items-center gap-3 p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all cursor-pointer">
+<span class="material-symbols-outlined text-[20px]" data-icon="sensors">sensors</span>
+<span class="font-label-md">API Status</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Chat Area -->
+<section class="flex-1 flex flex-col relative bg-background">
+<!-- Scrollable Feed -->
+<div class="flex-1 overflow-y-auto px-gutter py-stack-lg custom-scrollbar">
+<div class="max-w-[800px] mx-auto flex flex-col gap-stack-lg">
+<!-- AI Message -->
+<div class="flex flex-col items-start max-w-[85%] group">
+<div class="flex items-center gap-2 mb-2 ml-1">
+<div class="w-6 h-6 rounded bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container text-[16px]" data-icon="smart_toy">smart_toy</span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-bold">Groq AI</span>
+</div>
+<div class="bg-surface-container-low p-5 rounded-2xl rounded-tl-none ai-glow border border-outline-variant/30 text-on-background shadow-xl">
+<p class="font-body-md text-body-md leading-relaxed">
+                                Hola, soy Groq AI potenciado por Llama 3. ¿En qué puedo ayudarte hoy? Mi arquitectura está optimizada para ofrecerte respuestas con una latencia mínima récord.
+                            </p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex flex-col items-end max-w-[85%] ml-auto group">
+<div class="flex items-center gap-2 mb-2 mr-1">
+<span class="font-label-md text-label-md text-primary font-bold">You</span>
+<div class="w-6 h-6 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-[16px]" data-icon="person">person</span>
+</div>
+</div>
+<div class="bg-surface-container-highest p-5 rounded-2xl rounded-tr-none user-glow border border-outline-variant/30 text-on-background shadow-xl">
+<p class="font-body-md text-body-md leading-relaxed">
+                                Explícame las ventajas de usar Llama 3 8B en la infraestructura LPU de Groq frente a otras soluciones de nube tradicionales.
+                            </p>
+</div>
+</div>
+<!-- AI Message (Complex) -->
+<div class="flex flex-col items-start max-w-[85%] group">
+<div class="flex items-center gap-2 mb-2 ml-1">
+<div class="w-6 h-6 rounded bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container text-[16px]" data-icon="smart_toy">smart_toy</span>
+</div>
+<span class="font-label-md text-label-md text-secondary font-bold">Groq AI</span>
+</div>
+<div class="bg-surface-container-low p-5 rounded-2xl rounded-tl-none ai-glow border border-outline-variant/30 text-on-background shadow-xl">
+<p class="font-body-md text-body-md leading-relaxed mb-4">
+                                Llama 3 en la arquitectura LPU™ (Language Processing Unit) de Groq ofrece tres ventajas críticas:
+                            </p>
+<div class="space-y-3 font-body-md text-body-md">
+<div class="flex gap-3">
+<span class="text-tertiary">01.</span>
+<p><strong class="text-on-surface">Velocidad Determinística:</strong> Eliminamos la variabilidad de latencia típica de las GPUs.</p>
+</div>
+<div class="flex gap-3">
+<span class="text-tertiary">02.</span>
+<p><strong class="text-on-surface">Rendimiento Token/seg:</strong> Capacidad de procesar cientos de tokens por segundo de forma sostenida.</p>
+</div>
+<div class="flex gap-3">
+<span class="text-tertiary">03.</span>
+<p><strong class="text-on-surface">Eficiencia en Costes:</strong> Al ser una arquitectura optimizada específicamente para inferencia de LLMs, el consumo energético por token es significativamente menor.</p>
+</div>
+</div>
+<div class="mt-4 p-4 rounded-xl bg-surface-container-lowest border border-outline-variant font-code-sm text-code-sm overflow-hidden">
+<div class="flex justify-between items-center mb-2 text-on-surface-variant">
+<span>bash</span>
+<span class="material-symbols-outlined text-[16px] cursor-pointer" data-icon="content_copy">content_copy</span>
+</div>
+<code class="text-secondary">curl https://api.groq.com/openai/v1/chat/completions \
+  -H "Authorization: Bearer $GROQ_API_KEY" \
+  -d '{"model": "llama3-8b-8192", "messages": [{"role": "user", "content": "Hello!"}]}'</code>
+</div>
+</div>
+</div>
+<!-- Thinking Indicator -->
+<div class="flex flex-col items-start max-w-[85%] group" id="thinking-container">
+<div class="flex items-center gap-2 mb-2 ml-1">
+<div class="w-6 h-6 rounded bg-surface-container-highest flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]" data-icon="psychology">psychology</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant italic">Pensando...</span>
+</div>
+<div class="flex gap-1 items-center px-4 py-2 bg-surface-container-low rounded-full border border-outline-variant/30">
+<div class="w-2 h-2 rounded-full bg-secondary animate-bounce" style="animation-delay: 0.1s"></div>
+<div class="w-2 h-2 rounded-full bg-secondary animate-bounce" style="animation-delay: 0.2s"></div>
+<div class="w-2 h-2 rounded-full bg-secondary animate-bounce" style="animation-delay: 0.3s"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Input Area -->
+<div class="px-gutter pb-stack-lg pt-4 bg-background/80 backdrop-blur-md border-t border-outline-variant/20">
+<div class="max-w-[800px] mx-auto flex flex-col gap-3">
+<div class="relative group">
+<textarea class="w-full bg-surface-container-low border border-outline-variant rounded-2xl p-4 pr-32 focus:ring-2 focus:ring-secondary focus:border-transparent outline-none min-h-[56px] max-h-32 transition-all font-body-md text-body-md custom-scrollbar resize-none" placeholder="Escribe un mensaje a Groq..."></textarea>
+<div class="absolute right-2 bottom-2 flex gap-2">
+<button class="px-4 py-2 rounded-xl border border-outline-variant text-on-surface-variant hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined" data-icon="attachment">attachment</span>
+</button>
+<button class="px-6 py-2 rounded-xl bg-primary-container text-on-primary-container font-bold font-label-md flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all">
+<span>Enviar</span>
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+</div>
+<div class="flex justify-between items-center px-2">
+<div class="flex items-center gap-2 text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-[14px]" data-icon="lock">lock</span>
+<p class="text-[12px] font-label-md">Tu conversación se guarda localmente en esta sesión</p>
+</div>
+<button class="text-on-surface-variant hover:text-error transition-colors flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="delete">delete</span>
+                            Limpiar historial
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Side Metrics Panel -->
+<aside class="hidden xl:flex flex-col w-72 h-full sticky top-0 bg-surface-container-lowest border-l border-outline-variant">
+<div class="p-gutter flex flex-col gap-stack-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-stack-sm">
+<h2 class="font-label-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Metrics Panel</h2>
+<span class="material-symbols-outlined text-secondary animate-pulse-cyan text-[20px]" data-icon="dynamic_form">dynamic_form</span>
+</div>
+<!-- Bento Grid Metrics -->
+<div class="grid grid-cols-1 gap-3">
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant hover:border-secondary/40 transition-colors">
+<p class="text-[11px] text-on-surface-variant opacity-60 uppercase mb-1">Model Engine</p>
+<p class="font-code-sm text-secondary font-bold">llama3-8b-8192</p>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+<p class="text-[11px] text-on-surface-variant opacity-60 uppercase mb-1">Prompt</p>
+<div class="flex items-baseline gap-1">
+<p class="font-headline-lg-mobile text-on-surface font-bold">45</p>
+<p class="text-[10px] text-tertiary">tk</p>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+<p class="text-[11px] text-on-surface-variant opacity-60 uppercase mb-1">Completion</p>
+<div class="flex items-baseline gap-1">
+<p class="font-headline-lg-mobile text-on-surface font-bold">128</p>
+<p class="text-[10px] text-tertiary">tk</p>
+</div>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+<div class="flex justify-between items-center mb-1">
+<p class="text-[11px] text-on-surface-variant opacity-60 uppercase">Total Usage</p>
+<span class="px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary text-[10px] font-bold">ACTIVE</span>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="font-headline-lg text-on-surface font-bold">173</p>
+<p class="text-label-md text-on-surface-variant">Tokens</p>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-secondary-container/5 border border-secondary/20 relative overflow-hidden">
+<div class="relative z-10">
+<p class="text-[11px] text-secondary opacity-80 uppercase mb-1 font-bold">Throughput Speed</p>
+<div class="flex items-baseline gap-2">
+<p class="text-[32px] font-headline-lg text-secondary font-bold">82</p>
+<p class="font-label-md text-on-surface-variant">tokens/sec</p>
+</div>
+</div>
+<div class="absolute bottom-0 right-0 p-2 opacity-20">
+<span class="material-symbols-outlined text-[48px]" data-icon="speed">speed</span>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+<p class="text-[11px] text-on-surface-variant opacity-60 uppercase mb-1">Session Volume</p>
+<div class="w-full bg-surface-container-highest h-2 rounded-full mt-2 mb-3">
+<div class="bg-primary h-full rounded-full" style="width: 65%"></div>
+</div>
+<div class="flex justify-between">
+<p class="font-label-md text-on-surface font-bold">1,420 <span class="text-xs font-normal text-on-surface-variant">tokens</span></p>
+<p class="text-[10px] text-on-surface-variant">Limit: 2k</p>
+</div>
+</div>
+</div>
+<div class="mt-4 p-4 rounded-xl bg-surface-container-high/50 border border-dashed border-outline-variant text-center">
+<p class="text-[12px] text-on-surface-variant mb-3">Visualizing real-time inference hardware utilization</p>
+<div class="flex justify-center gap-1">
+<div class="w-1.5 h-4 bg-tertiary/60 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+<div class="w-1.5 h-6 bg-tertiary rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+<div class="w-1.5 h-3 bg-tertiary/40 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+<div class="w-1.5 h-5 bg-tertiary/80 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<script>
+        // Simple micro-interaction for input auto-resize
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Hide thinking container after mock delay
+        setTimeout(() => {
+            const thinking = document.getElementById('thinking-container');
+            if (thinking) {
+                // In a real app we'd swap this for the actual message
+                // thinking.style.opacity = '0.5'; 
+            }
+        }, 5000);
+    </script>
+</body></html>

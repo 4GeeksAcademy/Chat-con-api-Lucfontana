@@ -10,6 +10,11 @@ type ChatMessage = {
   content: string;
 };
 
+type GroqMessage = {
+  role: "system" | "user" | "assistant";
+  content: string;
+};
+
 type Usage = {
   prompt_tokens: number;
   completion_tokens: number;
@@ -34,6 +39,7 @@ type RequestBody = {
 };
 
 const DEFAULT_MODEL = "llama-3.1-8b-instant";
+const KNOWLEDGE_FILE_PATH = join(process.cwd(), "conocimiento", "conocimiento.txt");
 
 function readEnvFileValue(name: string) {
   const envPath = join(process.cwd(), ".env");
@@ -92,6 +98,35 @@ function normalizeUsage(usage?: Partial<Usage>): Usage {
   };
 }
 
+function getKnowledgeBase() {
+  if (!existsSync(KNOWLEDGE_FILE_PATH)) {
+    return "";
+  }
+
+  return readFileSync(KNOWLEDGE_FILE_PATH, "utf8").trim();
+}
+
+function buildSystemPrompt() {
+  const knowledgeBase = getKnowledgeBase();
+
+  if (!knowledgeBase) {
+    return [
+      "Eres el asistente virtual de una tienda gaming.",
+      "Responde en espanol claro y util.",
+      "Si el usuario pregunta algo comercial que no sabes, di que no tienes ese dato exacto y sugiere consultar por WhatsApp o en tienda.",
+    ].join("\n");
+  }
+
+  return [
+    "Eres el asistente virtual de una tienda gaming.",
+    "Usa la siguiente base de conocimiento como fuente principal cuando el usuario pregunte por la tienda, sus productos, ubicacion, horarios, garantias o preguntas frecuentes.",
+    "Si la pregunta no trata sobre la tienda, responde que no respondes preguntas que no esten relacionadas a la tienda.",
+    "Si falta un dato concreto, no lo inventes; indicalo con claridad.",
+    "Base de conocimiento:",
+    knowledgeBase,
+  ].join("\n\n");
+}
+
 function isValidMessage(message: unknown): message is ChatMessage {
   if (!message || typeof message !== "object") {
     return false;
@@ -138,6 +173,14 @@ export async function POST(request: Request) {
       content: message.content.trim(),
     }));
 
+  const groqMessages: GroqMessage[] = [
+    {
+      role: "system",
+      content: buildSystemPrompt(),
+    },
+    ...messages,
+  ];
+
   if (messages.length === 0) {
     return NextResponse.json(
       { error: "Debes enviar al menos un mensaje válido." },
@@ -158,7 +201,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model,
-        messages,
+        messages: groqMessages,
       }),
     });
   } catch {

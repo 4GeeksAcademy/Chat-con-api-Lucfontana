@@ -49,11 +49,7 @@ const EMPTY_TOTALS: TokenTotals = {
   completion: 0,
   total: 0,
 };
-const SUGGESTED_PROMPTS = [
-  "Explicame las ventajas de usar Llama 3 8B con Groq frente a GPUs tradicionales.",
-  "Ayudame a diseñar una API REST segura en Next.js con ejemplos en TypeScript.",
-  "Resumí este problema técnico y proponé un plan de implementación por etapas.",
-];
+
 
 const numberFormatter = new Intl.NumberFormat("es-AR");
 
@@ -140,15 +136,22 @@ function StatCard({
         : "text-primary";
 
   return (
-    <div className="rounded-2xl border border-outline-variant/60 bg-surface-low px-4 py-4">
-      <p className="text-[11px] uppercase tracking-[0.2em] text-muted/60">{label}</p>
-      <p className={`mt-2 font-heading text-2xl font-semibold ${accentClass}`}>{value}</p>
+    <div className="box-border min-w-0 rounded-2xl border border-outline-variant/60 bg-surface-low px-4 py-4">
+      <p className="min-w-0 text-[10px] leading-4 uppercase tracking-[0.16em] text-muted/60 break-words [overflow-wrap:anywhere]">
+        {label}
+      </p>
+      <p
+        className={`mt-2 min-w-0 overflow-hidden font-heading text-xl font-semibold break-words [overflow-wrap:anywhere] xl:text-2xl ${accentClass}`}
+      >
+        {value}
+      </p>
       {helper ? <p className="mt-1 text-xs text-muted/65">{helper}</p> : null}
     </div>
   );
 }
 
 function MetricsPanel({
+  className,
   lastUsage,
   tokenTotals,
   lastModel,
@@ -156,6 +159,7 @@ function MetricsPanel({
   tokensPerSecond,
   totalMessages,
 }: {
+  className?: string;
   lastUsage: Usage;
   tokenTotals: TokenTotals;
   lastModel: string;
@@ -164,7 +168,9 @@ function MetricsPanel({
   totalMessages: number;
 }) {
   return (
-    <aside className="flex h-full flex-col gap-4 rounded-[28px] border border-outline-variant/60 bg-black/20 p-4 backdrop-blur-sm">
+    <aside
+      className={`box-border flex min-h-0 min-w-0 flex-col gap-4 rounded-[28px] border border-outline-variant/60 bg-black/20 p-4 backdrop-blur-sm ${className ?? ""}`}
+    >
       <div className="flex items-center justify-between border-b border-outline-variant/40 pb-3">
         <div>
           <p className="font-heading text-sm font-semibold uppercase tracking-[0.2em] text-muted/75">
@@ -179,7 +185,7 @@ function MetricsPanel({
 
       <StatCard label="Model Engine" value={lastModel} accent="secondary" helper="Modelo activo" />
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 min-[900px]:grid-cols-3">
         <StatCard
           label="Prompt"
           value={formatMetric(lastUsage.prompt_tokens)}
@@ -200,7 +206,7 @@ function MetricsPanel({
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 min-[900px]:grid-cols-3">
         <StatCard
           label="Prompt acumulado"
           value={formatMetric(tokenTotals.prompt)}
@@ -219,7 +225,7 @@ function MetricsPanel({
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 xl:grid-cols-1">
+      <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 min-[900px]:grid-cols-3">
         <StatCard
           label="Tiempo de respuesta"
           value={formatMetric(responseTimeMs, " ms")}
@@ -589,19 +595,8 @@ export default function Home() {
                       </p>
                     </div>
 
-                    <div className="mt-8 grid gap-3 md:grid-cols-3">
-                      {SUGGESTED_PROMPTS.map((prompt) => (
-                        <button
-                          key={prompt}
-                          type="button"
-                          onClick={() => handleSubmit(prompt)}
-                          disabled={isLoading}
-                          className="rounded-2xl border border-outline-variant/60 bg-black/10 px-4 py-4 text-left text-sm leading-6 text-muted transition hover:border-secondary/35 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {prompt}
-                        </button>
-                      ))}
-                    </div>
+                    
+                    
                   </div>
                 ) : null}
 
@@ -686,8 +681,9 @@ export default function Home() {
             </div>
           </section>
 
-          <div className="hidden h-full w-[340px] shrink-0 border-l border-outline-variant/50 p-5 xl:block">
+          <div className="chat-scrollbar hidden h-full min-h-0 w-[340px] shrink-0 overflow-y-auto border-l border-outline-variant/50 p-5 xl:block">
             <MetricsPanel
+              className="h-full"
               lastUsage={lastUsage}
               tokenTotals={tokenTotals}
               lastModel={lastModel}
@@ -701,6 +697,7 @@ export default function Home() {
 
       <div className="hidden border-t border-outline-variant/40 p-4 sm:block xl:hidden">
         <div className="mx-auto max-w-[1600px]">
+          <div className="chat-scrollbar max-h-[30vh] overflow-y-auto">
           <MetricsPanel
             lastUsage={lastUsage}
             tokenTotals={tokenTotals}
@@ -709,6 +706,7 @@ export default function Home() {
             tokensPerSecond={tokensPerSecond}
             totalMessages={messages.length}
           />
+          </div>
         </div>
       </div>
     </div>
